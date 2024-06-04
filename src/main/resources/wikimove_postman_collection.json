@@ -1,0 +1,172 @@
+{
+	"info": {
+		"_postman_id": "d8f95c49-7ee7-457a-b71b-f6bc3a354d18",
+		"name": "wikimove",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "870273"
+	},
+	"item": [
+		{
+			"name": "Aggregate Service",
+			"item": [
+				{
+					"name": "location stream",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/vehicle-location-stream",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vehicle-location-stream"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List buses with fares",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/buses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"buses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bus Fallback Fare Service",
+			"item": [
+				{
+					"name": "Get Bus Fallback Fare",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/buses/4/fare",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"buses",
+								"4",
+								"fare"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bus Metadata Service",
+			"item": [
+				{
+					"name": "Get All Metadata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bus Live Fare and Location Service",
+			"item": [
+				{
+					"name": "Get Bus Fare by Bus Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/buses/1/fare",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"buses",
+								"1",
+								"fare"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Location Stream",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/location-stream",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"location-stream"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Train Live Location Service",
+			"item": [
+				{
+					"name": "Location Stream",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8084/location-stream",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"location-stream"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
