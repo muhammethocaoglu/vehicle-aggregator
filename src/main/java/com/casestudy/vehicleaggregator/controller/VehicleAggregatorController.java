@@ -1,54 +1,33 @@
 package com.casestudy.vehicleaggregator.controller;
 
-import com.casestudy.vehicleaggregator.config.ConfigProperties;
+import com.casestudy.vehicleaggregator.model.AggregateBusFareResponse;
 import com.casestudy.vehicleaggregator.model.EnrichedLocationResponse;
-import com.casestudy.vehicleaggregator.model.LocationResponse;
-import com.casestudy.vehicleaggregator.model.VehicleType;
+import com.casestudy.vehicleaggregator.service.VehicleAggregatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Mono;
 
-import java.time.Duration;
+import java.util.List;
 
 @RestController
 @RequestMapping("")
 @RequiredArgsConstructor
 public class VehicleAggregatorController {
-    private final ConfigProperties configProperties;
-    private final WebClient busLiveFareAndLocationWebClient;
-    private final WebClient trainLocationWebClient;
+
+    private final VehicleAggregatorService vehicleAggregatorService;
 
     @GetMapping(path = "/vehicle-location-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<EnrichedLocationResponse> retrieve() {
-        Flux<LocationResponse> busLocationStream =  busLiveFareAndLocationWebClient
-                .get()
-                .uri(configProperties.getBusLiveFareAndLocationService().getLocationStreamPath())
-                .retrieve()
-                .bodyToFlux(LocationResponse.class)
-                .retryWhen(Retry.maxInARow(3));
-        Flux<LocationResponse> trainLocationStream =  trainLocationWebClient
-                .get()
-                .uri(configProperties.getTrainLiveLocationService().getLocationStreamPath())
-                .retrieve()
-                .bodyToFlux(LocationResponse.class);
+        return vehicleAggregatorService.retrieveLocationStream();
+    }
 
-        Flux<EnrichedLocationResponse> enrichedBusLocationStream = busLocationStream.map(locationResponse -> EnrichedLocationResponse.builder()
-                .id(locationResponse.getId())
-                .location(locationResponse.getLocation())
-                .type(VehicleType.BUS)
-                .build());
-        Flux<EnrichedLocationResponse> enrichedTrainLocationStream = trainLocationStream.map(locationResponse -> EnrichedLocationResponse.builder()
-                .id(locationResponse.getId())
-                .location(locationResponse.getLocation())
-                .type(VehicleType.TRAIN)
-                .build());
-
-        return Flux.merge(enrichedBusLocationStream, enrichedTrainLocationStream);
+    @GetMapping(path = "/buses", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<List<AggregateBusFareResponse>> retrieveBusFares() {
+        return vehicleAggregatorService.retrieveBusFares();
     }
 
 }

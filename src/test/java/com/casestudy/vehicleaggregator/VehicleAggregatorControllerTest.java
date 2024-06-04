@@ -3,8 +3,10 @@ package com.casestudy.vehicleaggregator;
 import com.casestudy.vehicleaggregator.config.ConfigProperties;
 import com.casestudy.vehicleaggregator.config.WebClientConfig;
 import com.casestudy.vehicleaggregator.controller.VehicleAggregatorController;
+import com.casestudy.vehicleaggregator.model.AggregateBusFareResponse;
 import com.casestudy.vehicleaggregator.model.EnrichedLocationResponse;
 import com.casestudy.vehicleaggregator.model.VehicleType;
+import com.casestudy.vehicleaggregator.service.VehicleAggregatorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,7 +18,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
 import java.util.List;
 
 @EnableConfigurationProperties(value = ConfigProperties.class)
@@ -24,6 +25,7 @@ import java.util.List;
 @WebFluxTest(controllers = VehicleAggregatorController.class)
 @ContextConfiguration(classes = {
         VehicleAggregatorController.class,
+        VehicleAggregatorService.class,
         WebClientConfig.class
 })
 public class VehicleAggregatorControllerTest {
@@ -50,6 +52,21 @@ public class VehicleAggregatorControllerTest {
                         List.of(VehicleType.BUS, VehicleType.TRAIN).contains(enrichedLocationResponse.getType()))
                 .thenCancel()
                 .verify();
+
+    }
+
+    @Test
+    void test_should_return_bus_fare_list_when_retrieve_bus_fare() {
+        Flux<AggregateBusFareResponse> aggregateBusFareFlux = webClient
+                .get()
+                .uri("/buses")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(AggregateBusFareResponse.class)
+                .getResponseBody();
+
+        StepVerifier.create(aggregateBusFareFlux).expectNextCount(9).verifyComplete();
 
     }
 }

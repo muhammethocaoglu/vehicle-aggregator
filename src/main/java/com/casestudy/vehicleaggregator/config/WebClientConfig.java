@@ -19,6 +19,20 @@ public class WebClientConfig {
     }
 
     @Bean
+    public WebClient busFallbackFareWebClient() {
+        return WebClient.builder()
+                .baseUrl(configProperties.getBusFallbackFareService().getBaseUrl())
+                .build();
+    }
+
+    @Bean
+    public WebClient busMetadataWebClient() {
+        return WebClient.builder()
+                .baseUrl(configProperties.getBusMetadataService().getBaseUrl())
+                .build();
+    }
+
+    @Bean
     public WebClient trainLocationWebClient() {
         return WebClient.builder()
                 .baseUrl(configProperties.getTrainLiveLocationService().getBaseUrl())
